@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     // Retrieve paths to images
     vector<string> vstrImageFilenames;
     vector<double> vTimestamps;
-    string strFile = string(argv[3])+"/rgb.txt";
+    string strFile = string(argv[3]); //+"/rgb.txt";
     LoadImages(strFile, vstrImageFilenames, vTimestamps);
 
     int nImages = vstrImageFilenames.size();
@@ -65,7 +65,9 @@ int main(int argc, char **argv)
     for(int ni=0; ni<nImages; ni++)
     {
         // Read image from file
-        im = cv::imread(string(argv[3])+"/"+vstrImageFilenames[ni],CV_LOAD_IMAGE_UNCHANGED);
+        // im = cv::imread(string(argv[3])+"/"+vstrImageFilenames[ni],CV_LOAD_IMAGE_UNCHANGED);
+        // std::cout << "Loading img = "<< vstrImageFilenames[ni] << "\n"; 
+        im = cv::imread(vstrImageFilenames[ni],CV_LOAD_IMAGE_UNCHANGED);
         double tframe = vTimestamps[ni];
 
         if(im.empty())
@@ -82,7 +84,7 @@ int main(int argc, char **argv)
 #endif
 
         // Pass the image to the SLAM system
-        SLAM.TrackMonocular(im,tframe);
+        SLAM.TrackMonocular(im,ni);
 
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
@@ -101,8 +103,8 @@ int main(int argc, char **argv)
         else if(ni>0)
             T = tframe-vTimestamps[ni-1];
 
-        if(ttrack<T)
-            usleep((T-ttrack)*1e6);
+        // if(ttrack<T)
+        //     usleep((T-ttrack)*1e6);
     }
 
     // Stop all threads
@@ -149,6 +151,7 @@ void LoadImages(const string &strFile, vector<string> &vstrImageFilenames, vecto
             ss >> t;
             vTimestamps.push_back(t);
             ss >> sRGB;
+            // std::cout << "time = "<< t << " Img = "<< sRGB << "\n";
             vstrImageFilenames.push_back(sRGB);
         }
     }
