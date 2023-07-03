@@ -24,11 +24,11 @@ set(SRCS_DUTILS
   DUtils/Random.cpp
   DUtils/Timestamp.cpp)
 
-find_package(OpenCV 3.0 QUIET)
+find_package(OpenCV REQUIRED PATHS "/home/ergot/Packs/cv320/share/OpenCV")
 if(NOT OpenCV_FOUND)
    find_package(OpenCV 2.4.3 QUIET)
    if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
+	   message(FATAL_ERROR "For DBow:  OpenCV > 2.4.3 not found.")
    endif()
 endif()
 
