@@ -4,18 +4,31 @@
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
 
-# Camera calibration and distortion parameters (OpenCV) 
-Camera.fx: 531.997311219953
-Camera.fy: 533.1356680531353
-Camera.cx: 235.9470025052956
-Camera.cy: 314.8923553321703
+# # Camera calibration and distortion parameters (OpenCV)
+# These are the ones found after online-Calibration in VO code. 
+# Camera.fx: 531.997311219953
+# Camera.fy: 533.1356680531353
+# Camera.cx: 235.9470025052956
+# Camera.cy: 314.8923553321703
 
-## 0.122408323854503, -0.3720866534829474, -0.002469745979679282, -0.002456030913307799, 0.2748663659770293
+# ## 0.122408323854503, -0.3720866534829474, -0.002469745979679282, -0.002456030913307799, 0.2748663659770293
 
-Camera.k1: 0.122408323854503
-Camera.k2: -0.3720866534829474
-Camera.p1: -0.002469745979679282
-Camera.p2: -0.002456030913307799
+# Camera.k1: 0.122408323854503
+# Camera.k2: -0.3720866534829474
+# Camera.p1: -0.002469745979679282
+# Camera.p2: -0.002456030913307799
+
+# Camera calibration and distortion parameters (OpenCV)
+# These are simply mere transpose for Freiburg3-data because images are now transposed.
+Camera.fx: 539.2 
+Camera.fy: 535.4
+Camera.cx: 247.6
+Camera.cy: 320.1
+
+Camera.k1: 0.0
+Camera.k2: 0.0
+Camera.p1: 0.0
+Camera.p2: 0.0
 
 # Camera frames per second 
 Camera.fps: 30.0
