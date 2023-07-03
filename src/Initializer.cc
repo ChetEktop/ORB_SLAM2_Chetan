@@ -108,15 +108,19 @@ bool Initializer::Initialize(const Frame &CurrentFrame, const vector<int> &vMatc
     threadH.join();
     threadF.join();
 
+    std::printf(" Homog-Score = %.3f , Fundam-Score = %.3f ", SH, SF);
     // Compute ratio of scores
     float RH = SH/(SH+SF);
-
+    // std::cout << "Ratio RH = "<< RH << "\n";
     // Try to reconstruct from homography or fundamental depending on the ratio (0.40-0.45)
-    if(RH>0.40)
+    if(RH>0.40) {
+        std::cout << "Reconstructing via Homography (RH) = " <<RH<< "\n";
         return ReconstructH(vbMatchesInliersH,H,mK,R21,t21,vP3D,vbTriangulated,1.0,50);
-    else //if(pF_HF>0.6)
+    }
+    else { //if(pF_HF>0.6)
+        std::cout << "Reconstructing via Fundamental (RH) = "<<RH<<"\n";
         return ReconstructF(vbMatchesInliersF,F,mK,R21,t21,vP3D,vbTriangulated,1.0,50);
-
+    }
     return false;
 }
 
@@ -182,6 +186,7 @@ void Initializer::FindFundamental(vector<bool> &vbMatchesInliers, float &score, 
     cv::Mat T1, T2;
     Normalize(mvKeys1,vPn1, T1);
     Normalize(mvKeys2,vPn2, T2);
+    // std::cout << "Fundam-T's \n "<< T1 <<" \n" <<T2 << "\n";
     cv::Mat T2t = T2.t();
 
     // Best Results variables
@@ -194,7 +199,18 @@ void Initializer::FindFundamental(vector<bool> &vbMatchesInliers, float &score, 
     cv::Mat F21i;
     vector<bool> vbCurrentInliers(N,false);
     float currentScore;
-
+    // std::cout << "n-Matches = "<< mvMatches12.size() << "\n";
+    ///
+    std::vector<cv::Point2f> refPts, currPts;
+    for(const auto& match : mvMatches12) {
+        refPts.push_back(mvKeys1[match.first].pt);
+        currPts.push_back(mvKeys2[match.second].pt);
+    }
+    cv::Mat mask;
+    cv::Mat fundam = cv::findFundamentalMat(refPts, currPts, cv::FM_8POINT, 3.0, 0.99, mask );
+    fundam.convertTo(fundam, CV_32F);
+    // std::cout << "opencv F = "<< fundam << "\n";
+    ///
     // Perform all RANSAC iterations and save the solution with highest score
     for(int it=0; it<mMaxIterations; it++)
     {
@@ -210,6 +226,7 @@ void Initializer::FindFundamental(vector<bool> &vbMatchesInliers, float &score, 
         cv::Mat Fn = ComputeF21(vPn1i,vPn2i);
 
         F21i = T2t*Fn*T1;
+        // F21i = fundam;
 
         currentScore = CheckFundamental(F21i, vbCurrentInliers, mSigma);
 
@@ -220,6 +237,7 @@ void Initializer::FindFundamental(vector<bool> &vbMatchesInliers, float &score, 
             score = currentScore;
         }
     }
+    // std::cout << " Finalised F = \n"<< F21i/F21i.at<float>(2,2) << "\n";
 }
 
 

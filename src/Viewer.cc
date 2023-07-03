@@ -135,7 +135,10 @@ void Viewer::Run()
         pangolin::FinishFrame();
 
         cv::Mat im = mpFrameDrawer->DrawFrame();
-        cv::imshow("ORB-SLAM2: Current Frame",im);
+        cv::Mat imgToDisp;
+        cv::rotate(im, imgToDisp, cv::ROTATE_90_CLOCKWISE);
+
+        cv::imshow("ORB-SLAM2: Current Frame",imgToDisp);
         cv::waitKey(mT);
 
         if(menuReset)
